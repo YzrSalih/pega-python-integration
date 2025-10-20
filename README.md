@@ -1,12 +1,12 @@
 # Pega-Python Integration
 
-Bu proje Pega ile Python (FastAPI) arasında iki yönlü entegrasyon sağlayan bir köprü uygulamasıdır.
+This project is a bridge application that provides two-way integration between Pega and Python (FastAPI).
 
-## 🎯 Proje Amacı
+## 🎯 Project Goal
 
-Organizasyonlarda departman değişikliği, çalışan onboarding/offboarding gibi HR süreçlerini Pega'dan alıp Python tarafında işlemek ve gerektiğinde Pega'ya geri bildirim göndermek.
+To take HR processes such as department changes and employee onboarding/offboarding from Pega, process them on the Python side, and send feedback to Pega when necessary.
 
-## 🏗️ Mimari
+## 🏗️ Architecture
 
 ```
 Pega Case Management → REST API → Python FastAPI → SQLite Database
@@ -15,46 +15,46 @@ Pega Case Management → REST API → Python FastAPI → SQLite Database
                             (Email, Slack, Dashboard)
 ```
 
-## 🚀 Özellikler
+## 🚀 Features
 
-### Pega'dan Python'a (Gelen)
-- **Webhook Endpoint**: `/webhook/pega` - Pega'dan JSON event'leri alır
-- **Event Processing**: Arka planda asenkron işleme
-- **Risk Analizi**: Yüksek riskli departman değişiklikleri için otomatik değerlendirme
-- **Sistem Entegrasyonları**: Dış sistemlerle otomatik senkronizasyon
+### From Pega to Python (Incoming)
+- **Webhook Endpoint**: `/webhook/pega` - Receives JSON events from Pega
+- **Event Processing**: Asynchronous background processing
+- **Risk Analysis**: Automatic assessment for high-risk department changes
+- **System Integrations**: Automatic synchronization with external systems
 
-### Python'dan Pega'ya (Giden) 
-- **Case Oluşturma**: Yeni Pega case'leri oluşturma
-- **Case Güncelleme**: Mevcut case'leri güncelleme
-- **Not Ekleme**: Case'lere otomatik not ekleme
-- **Aksiyon Çalıştırma**: Pega iş akışında aksiyon tetikleme
+### From Python to Pega (Outgoing)
+- **Case Creation**: Create new Pega cases
+- **Case Update**: Update existing cases
+- **Add Note**: Automatically add notes to cases
+- **Run Action**: Trigger actions in Pega workflows
 
 ### Monitoring & Reporting
-- **Dashboard**: Gerçek zamanlı istatistikler
-- **Event Listesi**: Gelişmiş filtreleme seçenekleri  
-- **Metrikler**: 7 günlük trend analizi
-- **Event Detayları**: Her event'in işlem sonuçları
+- **Dashboard**: Real-time statistics
+- **Event List**: Advanced filtering options
+- **Metrics**: 7-day trend analysis
+- **Event Details**: Processing results for each event
 
-## 🛠️ Kurulum
+## 🛠️ Installation
 
-### 1. Projeyi Klonlayın
+### 1. Clone the Project
 ```bash
 git clone https://github.com/YzrSalih/pega-python-integration.git
 cd pega-python-integration
 ```
 
-### 2. Çevre Değişkenlerini Ayarlayın
+### 2. Set Environment Variables
 ```bash
 cp .env.example .env
-# .env dosyasını Pega bağlantı bilgilerinizle düzenleyin
+# Edit the .env file with your Pega connection details
 ```
 
-### 3. Sunucuyu Başlatın
+### 3. Start the Server
 ```bash
 ./start.sh
 ```
 
-Alternatif olarak manuel kurulum:
+Alternatively, manual setup:
 ```bash
 python3 -m venv venv
 source venv/bin/activate
@@ -66,29 +66,29 @@ uvicorn app:app --host 0.0.0.0 --port 8000 --reload
 ## 📡 API Endpoints
 
 ### Webhook (Pega → Python)
-- `POST /webhook/pega` - Pega'dan event alma
-- `GET /events` - Event'leri listeleme (filtreleme ile)
-- `GET /events/{id}` - Event detayları
-- `POST /events/{id}/reprocess` - Failed event'i yeniden işleme
+- `POST /webhook/pega` - Receive events from Pega
+- `GET /events` - List events (with filtering)
+- `GET /events/{id}` - Event details
+- `POST /events/{id}/reprocess` - Reprocess a failed event
 
-### Pega Integration (Python → Pega)  
-- `POST /pega/case` - Yeni case oluşturma
-- `PUT /pega/case/{case_id}` - Case güncelleme
-- `POST /pega/case/{case_id}/note` - Case'e not ekleme
-- `POST /pega/case/{case_id}/action/{action_id}` - Case aksiyonu çalıştırma
+### Pega Integration (Python → Pega)
+- `POST /pega/case` - Create a new case
+- `PUT /pega/case/{case_id}` - Update a case
+- `POST /pega/case/{case_id}/note` - Add a note to a case
+- `POST /pega/case/{case_id}/action/{action_id}` - Run a case action
 
 ### Monitoring
-- `GET /health` - Sağlık kontrolü
-- `GET /metrics` - 7 günlük istatistikler  
-- `GET /dashboard` - Dashboard özet bilgileri
+- `GET /health` - Health check
+- `GET /metrics` - 7-day statistics
+- `GET /dashboard` - Dashboard summary
 
-## 🧪 Test Etme
+## 🧪 Testing
 
 ```bash
-# Test script'ini çalıştırın
+# Run the test script
 python test_api.py
 
-# Veya manuel test
+# Or manual test
 curl -X POST "http://localhost:8000/webhook/pega" \
      -H "Content-Type: application/json" \
      -d '{
@@ -100,63 +100,63 @@ curl -X POST "http://localhost:8000/webhook/pega" \
      }'
 ```
 
-## 🔧 Yapılandırma
+## 🔧 Configuration
 
-### Çevre Değişkenleri (.env)
+### Environment Variables (.env)
 ```bash
-# Pega Bağlantısı
+# Pega Connection
 PEGA_URL=https://yourpega.com/prweb/api/v1
 PEGA_USERNAME=your_username
 PEGA_PASSWORD=your_password
-# Alternatif: PEGA_API_KEY=your_api_key
+# Alternative: PEGA_API_KEY=your_api_key
 
-# Diğer
+# Others
 DB_PATH=events.db
 LOG_LEVEL=INFO
 ```
 
-## 📊 Desteklenen Event Türleri
+## 📊 Supported Event Types
 
-- `department_change` - Departman değişikliği
-- `employee_onboarding` - Yeni çalışan işe alım
-- `employee_offboarding` - Çalışan çıkış
-- `role_change` - Rol değişikliği  
+- `department_change` - Department change
+- `employee_onboarding` - New employee onboarding
+- `employee_offboarding` - Employee offboarding
+- `role_change` - Role change
 
-Her event türü için özel iş mantığı ve entegrasyonlar mevcuttur.
+Custom business logic and integrations are available for each event type.
 
-## 🔄 İş Akışı Örneği
+## 🔄 Example Workflow
 
-1. **Pega**: HR departmanında departman değişikliği case'i oluşturulur
-2. **Pega → Python**: REST call ile event gönderilir
-3. **Python**: Event kaydedilir ve arka planda işlenir:
-   - Risk analizi yapılır
-   - Dış sistemler güncellenir (badge, email, etc.)
-   - Yüksek risk durumunda Pega'ya uyarı gönderilir
-4. **Python → Pega**: Gerekirse otomatik case notu veya aksiyon
+1. **Pega**: A department change case is created in HR
+2. **Pega → Python**: The event is sent via REST call
+3. **Python**: The event is recorded and processed in the background:
+   - Risk analysis is performed
+   - External systems are updated (badge, email, etc.)
+   - If high risk, an alert is sent to Pega
+4. **Python → Pega**: If necessary, an automatic case note or action is sent
 
-## 🚀 Geliştirilecek Özellikler
+## 🚀 Planned Features
 
-- [ ] Email/Slack bildirimleri
-- [ ] Dashboard web arayüzü
-- [ ] Advanced risk scoring algoritması
-- [ ] Audit trail ve compliance raporları
+- [ ] Email/Slack notifications
+- [ ] Dashboard web interface
+- [ ] Advanced risk scoring algorithm
+- [ ] Audit trail and compliance reports
 - [ ] Multi-tenant support
-- [ ] Event replay mekanizması
+- [ ] Event replay mechanism
 
-## 📝 API Dokümantasyonu
+## 📝 API Documentation
 
-Sunucu çalıştıktan sonra:
+After the server is running:
 - Swagger UI: http://localhost:8000/docs
 - ReDoc: http://localhost:8000/redoc
 
-## 🤝 Katkıda Bulunma
+## 🤝 Contributing
 
-1. Fork edin
-2. Feature branch oluşturun (`git checkout -b feature/amazing-feature`)
-3. Commit yapın (`git commit -m 'Add amazing feature'`)
-4. Push edin (`git push origin feature/amazing-feature`)
-5. Pull Request açın
+1. Fork it
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit (`git commit -m 'Add amazing feature'`)
+4. Push (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-## 📄 Lisans
+## 📄 License
 
-Bu proje MIT lisansı altında lisanslanmıştır.
+This project is licensed under the MIT License.
